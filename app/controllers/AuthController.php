@@ -47,9 +47,7 @@ class AuthController extends BaseController
         $_SESSION['name']
             = $user['name'];
 
-        header(
-            "Location: /dashboard"
-        );
+        header("Location: /hotel-booking/public/dashboard");
 
         exit;
     }
@@ -77,9 +75,7 @@ class AuthController extends BaseController
     {
         session_destroy();
 
-        header(
-            "Location: /"
-        );
+        header("Location: /hotel-booking/public/");
 
         exit;
     }

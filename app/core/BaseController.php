@@ -7,8 +7,18 @@ class BaseController
         array $data = []
     ): void {
 
-        extract($data);
+        extract(
+            $data
+        );
 
-        require "../app/views/$path.php";
+
+        require
+            __DIR__
+            .
+            '/../views/'
+            .
+            $path
+            .
+            '.php';
     }
 }

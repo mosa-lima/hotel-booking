@@ -2,26 +2,51 @@
 
 class Database
 {
-    private static ?mysqli $connection = null;
+    private static ?mysqli
+        $connection = null;
 
-    public static function connect(): mysqli
+
+    public static function
+    connect(): mysqli
     {
-        if (self::$connection === null) {
+        if(
+            self::$connection
+            ===
+            null
+        ){
 
-            self::$connection = new mysqli(
-                "localhost",
-                "root",
-                "",
-                "receptionist"
-            );
+            self::$connection =
+                new mysqli(
 
-            if (self::$connection->connect_error) {
-                die("Database connection failed.");
+                    "localhost",
+
+                    "root",
+
+                    "",
+
+                    "receptionist"
+                );
+
+
+            if(
+                self::$connection
+                    ->connect_error
+            ){
+
+                die(
+                    "Database connection failed."
+                );
             }
 
-            self::$connection->set_charset("utf8mb4");
+
+            self::$connection
+                ->set_charset(
+                    "utf8mb4"
+                );
         }
 
-        return self::$connection;
+
+        return
+            self::$connection;
     }
 }

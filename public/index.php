@@ -120,6 +120,14 @@ switch ($url) {
 
         break;
 
+    case 'payment/process':
+
+    (
+        new ReceptionistController()
+    )->payBill();
+
+    break;
+
 
     default:
 

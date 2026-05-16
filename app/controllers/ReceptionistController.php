@@ -4,6 +4,7 @@ require_once __DIR__ . '/AuthController.php';
 require_once __DIR__ . '/../models/BookingModel.php';
 require_once __DIR__ . '/../models/RoomModel.php';
 require_once __DIR__ . '/../core/BaseController.php';
+require_once __DIR__ . '/../models/BillingModel.php';
 
 class ReceptionistController
 extends BaseController
@@ -135,4 +136,59 @@ extends BaseController
             "Location: /hotel-booking/public/dashboard"
         );
     }
+
+    public function
+payBill(): void
+{
+
+    AuthController
+        ::requireReceptionist();
+
+
+    $bookingId =
+        (int)
+        $_POST[
+            'booking_id'
+        ];
+
+
+    $method =
+        $_POST[
+            'method'
+        ];
+
+
+    $success =
+
+        (
+            new BillingModel()
+        )->markPaid(
+
+            $bookingId,
+
+            $method
+        );
+
+
+
+    header(
+        "Content-Type: application/json"
+    );
+
+
+    echo json_encode([
+
+        "success"
+            =>
+            $success,
+
+        "message"
+            =>
+            $success
+                ?
+                "Payment completed"
+                :
+                "Payment failed"
+    ]);
+}
 }

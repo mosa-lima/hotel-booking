@@ -1,13 +1,21 @@
 <?php
 
-require_once "../app/config/Database.php";
+require_once
+    __DIR__
+    .
+    '/../config/Database.php';
 
 abstract class BaseModel
 {
-    protected mysqli $db;
+    protected mysqli
+        $db;
 
-    public function __construct()
+
+    public function
+    __construct()
     {
-        $this->db = Database::connect();
+        $this->db =
+            Database
+                ::connect();
     }
 }

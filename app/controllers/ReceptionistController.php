@@ -5,7 +5,8 @@ require_once __DIR__ . '/../models/BookingModel.php';
 require_once __DIR__ . '/../models/RoomModel.php';
 require_once __DIR__ . '/../core/BaseController.php';
 
-class ReceptionistController extends BaseController
+class ReceptionistController
+extends BaseController
 {
     public function dashboard(): void
     {
@@ -18,22 +19,62 @@ class ReceptionistController extends BaseController
         $roomModel =
             new RoomModel();
 
-        $checkins =
-            $bookingModel
-                ->getTodaysCheckins();
-
-        $rooms =
-            $roomModel
-                ->getStatusBoard();
-
         $this->view(
             'receptionist/dashboard',
             [
-                'checkins' => $checkins,
-                'rooms' => $rooms
+
+                'checkins'
+                    =>
+                    $bookingModel
+                        ->getTodaysCheckins(),
+
+                'bookings'
+                    =>
+                    $bookingModel
+                        ->getAll(),
+
+                'rooms'
+                    =>
+                    $roomModel
+                        ->getStatusBoard()
             ]
         );
     }
+
+
+
+    public function cancel(
+        int $bookingId
+    ): void {
+
+        (
+            new BookingModel()
+        )->cancel(
+            $bookingId
+        );
+
+        header(
+            "Location: /hotel-booking/public/dashboard"
+        );
+    }
+
+
+
+    public function checkout(
+        int $bookingId
+    ): void {
+
+        (
+            new BookingModel()
+        )->checkout(
+            $bookingId
+        );
+
+        header(
+            "Location: /hotel-booking/public/dashboard"
+        );
+    }
+
 
 
     public function showCheckin(
@@ -74,42 +115,24 @@ class ReceptionistController extends BaseController
     }
 
 
+
     public function processCheckin(): void
     {
-        AuthController
-            ::requireReceptionist();
-
-        $bookingId =
-            (int)$_POST['booking_id'];
-
-        $roomId =
-            (int)$_POST['room_id'];
-
-
-        $bookingModel =
-            new BookingModel();
-
-
         $success =
-            $bookingModel
-                ->checkIn(
-                    $bookingId,
-                    $roomId
-                );
+            (
+                new BookingModel()
+            )->checkIn(
 
+                (int)
+                $_POST['booking_id'],
 
-        if ($success) {
-
-            header(
-                "Location: /hotel-booking/public/dashboard"
+                (int)
+                $_POST['room_id']
             );
 
-            exit;
-        }
 
-
-        die(
-            "Check-in failed."
+        header(
+            "Location: /hotel-booking/public/dashboard"
         );
     }
 }

@@ -8,20 +8,16 @@ class RoomModel extends BaseModel
         int $typeId
     ): array {
 
-        $sql = "
-            SELECT
-                id,
-                room_number,
-                floor,
-                status
-            FROM rooms
-            WHERE room_type_id = ?
-            AND status = 'available'
-            ORDER BY room_number
-        ";
-
         $stmt =
-            $this->db->prepare($sql);
+            $this->db->prepare("
+                SELECT
+                    *
+                FROM rooms
+                WHERE
+                    room_type_id=?
+                AND
+                    status='available'
+            ");
 
         $stmt->bind_param(
             "i",
@@ -30,8 +26,7 @@ class RoomModel extends BaseModel
 
         $stmt->execute();
 
-        return
-            $stmt
+        return $stmt
             ->get_result()
             ->fetch_all(
                 MYSQLI_ASSOC
@@ -39,24 +34,19 @@ class RoomModel extends BaseModel
     }
 
 
+
     public function getStatusBoard(): array
     {
-        $sql = "
-            SELECT
-                room_number,
-                floor,
-                status
-            FROM rooms
-            ORDER BY floor, room_number
-        ";
-
         $stmt =
-            $this->db->prepare($sql);
+            $this->db->prepare("
+                SELECT *
+                FROM rooms
+                ORDER BY floor
+            ");
 
         $stmt->execute();
 
-        return
-            $stmt
+        return $stmt
             ->get_result()
             ->fetch_all(
                 MYSQLI_ASSOC

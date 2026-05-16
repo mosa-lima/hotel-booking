@@ -1,7 +1,7 @@
 <?php
 
-require_once "../app/models/UserModel.php";
-require_once "../app/core/BaseController.php";
+require_once __DIR__ . '/../models/UserModel.php';
+require_once __DIR__ . '/../core/BaseController.php';
 
 class AuthController extends BaseController
 {
@@ -47,10 +47,13 @@ class AuthController extends BaseController
         $_SESSION['name']
             = $user['name'];
 
-        header("Location: /hotel-booking/public/dashboard");
+        header(
+            "Location: /hotel-booking/public/dashboard"
+        );
 
         exit;
     }
+
 
 
     public static function
@@ -71,11 +74,14 @@ class AuthController extends BaseController
     }
 
 
+
     public function logout(): void
     {
         session_destroy();
 
-        header("Location: /hotel-booking/public/");
+        header(
+            "Location: /hotel-booking/public/"
+        );
 
         exit;
     }

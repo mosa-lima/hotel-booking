@@ -3,7 +3,9 @@
 
 <head>
 
-    <title>Reception Dashboard</title>
+    <title>
+        Reception Dashboard
+    </title>
 
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
@@ -19,45 +21,57 @@
 
         body{
             font-family:Poppins;
-            background:#f4f7fc;
+            background:#eef2f7;
         }
 
         .hero{
-            background:linear-gradient(
-                135deg,
-                #1d3557,
-                #457b9d
-            );
+            background:
+                linear-gradient(
+                    135deg,
+                    #0f172a,
+                    #1d4ed8
+                );
 
             color:white;
 
             border-radius:20px;
 
-            padding:30px;
+            padding:35px;
 
             margin-bottom:30px;
         }
 
         .card{
             border:none;
-            border-radius:18px;
+
+            border-radius:20px;
+
             box-shadow:
-                0 8px 20px rgba(0,0,0,.08);
+                0 8px 25px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    .08
+                );
         }
 
         .status-badge{
-            font-size:13px;
-            padding:8px 14px;
-            border-radius:20px;
-        }
 
-        table{
-            font-size:15px;
+            padding:
+                8px 14px;
+
+            border-radius:
+                20px;
         }
 
         .btn-premium{
-            border-radius:25px;
-            font-weight:600;
+
+            border-radius:
+                25px;
+
+            font-weight:
+                600;
         }
 
     </style>
@@ -74,17 +88,22 @@
         <h2>
 
             Welcome,
+
             <?= htmlspecialchars(
                 $_SESSION['name']
             ) ?>
 
         </h2>
 
+
         <p>
-            Front Desk Operations Dashboard
+
+            Hotel Reception Operations
+
         </p>
 
     </div>
+
 
 
 
@@ -107,11 +126,11 @@
 
                 <th>Guest</th>
 
-                <th>Room Type</th>
+                <th>Room</th>
 
                 <th>Guests</th>
 
-                <th>Action</th>
+                <th>Actions</th>
 
             </tr>
 
@@ -127,31 +146,29 @@
                 <tr>
 
                     <td>
+
                         #<?= $item['id'] ?>
+
                     </td>
 
+
                     <td>
+
                         <?= htmlspecialchars(
                             $item['name']
                         ) ?>
+
                     </td>
+
 
                     <td>
 
-                        <span
-                            class="
-                                badge
-                                bg-primary
-                            "
-                        >
-
-                            <?= htmlspecialchars(
-                                $item['room_type']
-                            ) ?>
-
-                        </span>
+                        <?= htmlspecialchars(
+                            $item['room_type']
+                        ) ?>
 
                     </td>
+
 
                     <td>
 
@@ -160,21 +177,71 @@
                     </td>
 
 
+
                     <td>
 
+
+                        <?php if(
+
+                            $item['status']
+                            ===
+                            'checked_in'
+
+                        ): ?>
+
+
+                            <a
+                                href="/hotel-booking/public/checkout/<?= $item['id'] ?>"
+                                class="
+                                    btn
+                                    btn-danger
+                                    btn-sm
+                                    btn-premium
+                                "
+                            >
+
+                                Check Out
+
+                            </a>
+
+
+                        <?php else: ?>
+
+
+                            <a
+                                href="/hotel-booking/public/checkin/<?= $item['id'] ?>"
+                                class="
+                                    btn
+                                    btn-success
+                                    btn-sm
+                                    btn-premium
+                                "
+                            >
+
+                                Check In
+
+                            </a>
+
+
+                        <?php endif; ?>
+
+
+
                         <a
-                            href="/hotel-booking/public/checkin/<?= $item['id'] ?>"
+                            href="/hotel-booking/public/cancel/<?= $item['id'] ?>"
                             class="
                                 btn
-                                btn-success
+                                btn-warning
                                 btn-sm
                                 btn-premium
                             "
                         >
 
-                            Check In
+                            Cancel
 
                         </a>
+
+
 
                     </td>
 
@@ -182,12 +249,12 @@
 
             <?php endforeach; ?>
 
-
             </tbody>
 
         </table>
 
     </div>
+
 
 
 
@@ -201,7 +268,7 @@
         </h4>
 
 
-        <table class="table table-hover">
+        <table class="table">
 
             <thead>
 
@@ -234,6 +301,7 @@
 
                     </td>
 
+
                     <td>
 
                         <?= htmlspecialchars(
@@ -241,6 +309,7 @@
                         ) ?>
 
                     </td>
+
 
                     <td>
 
@@ -292,6 +361,7 @@
         </table>
 
     </div>
+
 
 
 

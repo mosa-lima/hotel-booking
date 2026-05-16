@@ -1,6 +1,6 @@
 <?php
 
-require_once "../app/core/BaseModel.php";
+require_once __DIR__ . '/../core/BaseModel.php';
 
 class UserModel extends BaseModel
 {
@@ -16,7 +16,10 @@ class UserModel extends BaseModel
             LIMIT 1
         ";
 
-        $stmt = $this->db->prepare($sql);
+        $stmt =
+            $this->db->prepare(
+                $sql
+            );
 
         $stmt->bind_param(
             "s",
@@ -26,10 +29,12 @@ class UserModel extends BaseModel
         $stmt->execute();
 
         $result =
-            $stmt->get_result();
+            $stmt
+                ->get_result();
 
         return
-            $result->fetch_assoc()
+            $result
+                ->fetch_assoc()
             ?: null;
     }
 }

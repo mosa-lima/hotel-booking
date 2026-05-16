@@ -17,17 +17,55 @@ $url =
 
 
 
-if (
+if(
     preg_match(
         '/^checkin\/(\d+)$/',
         $url,
         $matches
     )
-) {
+){
 
     (
         new ReceptionistController()
     )->showCheckin(
+        (int)$matches[1]
+    );
+
+    exit;
+}
+
+
+
+if(
+    preg_match(
+        '/^checkout\/(\d+)$/',
+        $url,
+        $matches
+    )
+){
+
+    (
+        new ReceptionistController()
+    )->checkout(
+        (int)$matches[1]
+    );
+
+    exit;
+}
+
+
+
+if(
+    preg_match(
+        '/^cancel\/(\d+)$/',
+        $url,
+        $matches
+    )
+){
+
+    (
+        new ReceptionistController()
+    )->cancel(
         (int)$matches[1]
     );
 

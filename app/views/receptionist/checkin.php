@@ -1,79 +1,108 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>
-        Guest Check-in
-    </title>
+
+    <title>Guest Check-in</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
 </head>
 
-<body>
-
-<h2>
-
-    Check-in Booking #
-
-    <?= htmlspecialchars(
-        $booking['id']
-    ) ?>
-
-</h2>
-
-
-<form
-    method="POST"
-    action="/hotel-booking/public/checkin/process"
+<body
+    class="bg-light"
 >
 
-    <input
-        type="hidden"
-        name="booking_id"
-        value="<?= $booking['id'] ?>"
+<div
+    class="
+        container
+        mt-5
+    "
+>
+
+    <div
+        class="
+            card
+            p-5
+            shadow
+        "
     >
 
+        <h2 class="mb-4">
 
-    <label>
+            Guest Check-in
 
-        Select Room
-
-    </label>
+        </h2>
 
 
-    <select
-        name="room_id"
-        required
-    >
-
-        <?php foreach(
-            $rooms as $room
-        ): ?>
-
-        <option
-            value="<?= $room['id'] ?>"
+        <form
+            method="POST"
+            action="/hotel-booking/public/checkin/process"
         >
 
-            Room
-
-            <?= htmlspecialchars(
-                $room['room_number']
-            ) ?>
-
-        </option>
-
-        <?php endforeach; ?>
-
-    </select>
+            <input
+                type="hidden"
+                name="booking_id"
+                value="<?= $booking['id'] ?>"
+            >
 
 
-    <br><br>
+            <label
+                class="mb-2"
+            >
+
+                Select Available Room
+
+            </label>
 
 
-    <button type="submit">
+            <select
+                name="room_id"
+                class="
+                    form-select
+                    mb-4
+                "
+                required
+            >
 
-        Confirm Check-in
+                <?php foreach(
+                    $rooms as $room
+                ): ?>
 
-    </button>
+                    <option
+                        value="<?= $room['id'] ?>"
+                    >
 
-</form>
+                        Room
+                        <?= $room['room_number'] ?>
+
+                    </option>
+
+                <?php endforeach; ?>
+
+            </select>
+
+
+
+            <button
+                class="
+                    btn
+                    btn-success
+                "
+            >
+
+                Confirm Check-in
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
 
 </body>
 </html>

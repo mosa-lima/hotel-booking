@@ -4,7 +4,9 @@ session_start();
 
 require_once
     "../app/controllers/AuthController.php";
-
+require_once
+    __DIR__
+    . '/../app/controllers/ReceptionistController.php';
 $url =
     $_GET['url']
     ?? '';
@@ -35,6 +37,14 @@ switch ($url) {
         )->logout();
 
         break;
+
+        case 'dashboard':
+
+    (
+        new ReceptionistController()
+    )->dashboard();
+
+    break;
 
 
     default:

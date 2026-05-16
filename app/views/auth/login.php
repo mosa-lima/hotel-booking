@@ -7,7 +7,7 @@
 
 <h2>Receptionist Login</h2>
 
-<form method="POST" action="/login">
+<form method="POST" action="/hotel-booking/public/login">
 
     <input
         type="email"

@@ -3,20 +3,46 @@
 session_start();
 
 require_once
-    "../app/controllers/AuthController.php";
+    __DIR__
+    . '/../app/controllers/AuthController.php';
+
 require_once
     __DIR__
     . '/../app/controllers/ReceptionistController.php';
+
+
 $url =
     $_GET['url']
     ?? '';
+
+
+
+if (
+    preg_match(
+        '/^checkin\/(\d+)$/',
+        $url,
+        $matches
+    )
+) {
+
+    (
+        new ReceptionistController()
+    )->showCheckin(
+        (int)$matches[1]
+    );
+
+    exit;
+}
+
+
 
 switch ($url) {
 
     case '':
 
         require
-            "../app/views/auth/login.php";
+            __DIR__
+            . '/../app/views/auth/login.php';
 
         break;
 
@@ -38,13 +64,23 @@ switch ($url) {
 
         break;
 
-        case 'dashboard':
 
-    (
-        new ReceptionistController()
-    )->dashboard();
+    case 'dashboard':
 
-    break;
+        (
+            new ReceptionistController()
+        )->dashboard();
+
+        break;
+
+
+    case 'checkin/process':
+
+        (
+            new ReceptionistController()
+        )->processCheckin();
+
+        break;
 
 
     default:

@@ -1,11 +1,9 @@
-<!DOCTYPE html>
+=<!DOCTYPE html>
 <html>
 <head>
-
     <title>
         Reception Dashboard
     </title>
-
 </head>
 
 <body>
@@ -29,6 +27,7 @@
         <th>Guest</th>
         <th>Room Type</th>
         <th>Guests</th>
+        <th>Action</th>
     </tr>
 
     <?php foreach(
@@ -59,6 +58,16 @@
             <?= htmlspecialchars(
                 $item['num_guests']
             ) ?>
+        </td>
+
+        <td>
+
+            <a href="/hotel-booking/public/checkin/<?= $item['id'] ?>">
+
+                Check In
+
+            </a>
+
         </td>
 
     </tr>
@@ -115,8 +124,12 @@
 </table>
 
 
-<a href="/logout">
+<br><br>
+
+<a href="/hotel-booking/public/logout">
+
     Logout
+
 </a>
 
 </body>

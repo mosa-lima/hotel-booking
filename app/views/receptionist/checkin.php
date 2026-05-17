@@ -269,6 +269,7 @@
 
 
                     <select
+                        id="payment_method"
                         class="
                             form-select
                             mb-4
@@ -338,6 +339,23 @@
                     >
 
                         Confirm Check-in
+
+                    </button>
+
+
+
+                    <button
+                        type="button"
+                        onclick="payBill(<?= $booking['id'] ?>)"
+                        class="
+                            btn
+                            btn-primary
+                            btn-premium
+                            px-4
+                        "
+                    >
+
+                        Pay Now
 
                     </button>
 
@@ -586,6 +604,21 @@
 
 
 
+                <div
+                    id="payment_status"
+                    class="
+                        badge
+                        bg-warning
+                        mb-3
+                    "
+                >
+
+                    Pending
+
+                </div>
+
+
+
 
 
 
@@ -621,6 +654,8 @@
 
 </div>
 
+
+<script src="/hotel-booking/public/assets/js/payment.js"></script>
 
 
 </body>

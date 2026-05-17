@@ -46,6 +46,9 @@ class BookingModel extends BaseModel
 
 
 
+
+
+
     public function getAll(): array
     {
         $sql = "
@@ -76,6 +79,9 @@ class BookingModel extends BaseModel
                 MYSQLI_ASSOC
             );
     }
+
+
+
 
 
 
@@ -135,6 +141,10 @@ class BookingModel extends BaseModel
 
 
 
+
+
+
+
     public function cancel(
         int $bookingId
     ): bool {
@@ -158,6 +168,10 @@ class BookingModel extends BaseModel
         return
             $stmt->execute();
     }
+
+
+
+
 
 
 
@@ -189,6 +203,11 @@ class BookingModel extends BaseModel
             $result->fetch_assoc()
             ?: null;
     }
+
+
+
+
+
 
 
 
@@ -248,6 +267,11 @@ class BookingModel extends BaseModel
 
 
 
+
+
+
+
+
     public function checkout(
         int $bookingId
     ): bool {
@@ -302,5 +326,129 @@ class BookingModel extends BaseModel
 
             return false;
         }
+    }
+
+
+
+
+
+
+
+
+    public function
+    updateStatus(
+        int $bookingId,
+        string $status
+    ): bool
+    {
+
+        $stmt =
+            $this->db
+                ->prepare(
+
+                    "
+                        UPDATE bookings
+                        SET status=?
+                        WHERE id=?
+                    "
+                );
+
+        $stmt
+            ->bind_param(
+
+                "si",
+
+                $status,
+
+                $bookingId
+            );
+
+        return
+            $stmt
+                ->execute();
+    }
+
+
+
+
+
+
+
+
+    public function
+    extendCheckout(
+        int $bookingId
+    ): bool
+    {
+
+        $stmt =
+            $this->db
+                ->prepare(
+
+                    "
+                        UPDATE bookings
+
+                        SET
+
+                            checkout_date =
+                            DATE_ADD(
+                                checkout_date,
+                                INTERVAL 1 DAY
+                            )
+
+                        WHERE id=?
+                    "
+                );
+
+        $stmt
+            ->bind_param(
+                "i",
+                $bookingId
+            );
+
+        return
+            $stmt
+                ->execute();
+    }
+
+
+
+
+
+
+
+
+    public function
+    getTodaysDepartures(): int
+    {
+
+        $stmt =
+            $this->db
+                ->prepare(
+
+                    "
+                        SELECT
+                            COUNT(*) AS total
+
+                        FROM bookings
+
+                        WHERE
+
+                            checkout_date
+                            =
+                            CURDATE()
+                    "
+                );
+
+        $stmt->execute();
+
+        $row =
+            $stmt
+                ->get_result()
+                ->fetch_assoc();
+
+        return
+            (int)
+            $row['total'];
     }
 }

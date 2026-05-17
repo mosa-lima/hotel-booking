@@ -24,7 +24,54 @@
             background:#eef2f7;
         }
 
+        .sidebar{
+
+            position:fixed;
+
+            top:0;
+            left:0;
+
+            width:240px;
+
+            height:100%;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #0f172a,
+                    #1d4ed8
+                );
+
+            color:white;
+
+            padding:30px;
+        }
+
+
+        .sidebar a{
+
+            display:block;
+
+            color:white;
+
+            text-decoration:none;
+
+            margin-bottom:18px;
+
+            font-weight:500;
+        }
+
+
+        .content{
+
+            margin-left:270px;
+
+            padding:30px;
+        }
+
+
         .hero{
+
             background:
                 linear-gradient(
                     135deg,
@@ -41,7 +88,9 @@
             margin-bottom:30px;
         }
 
+
         .card{
+
             border:none;
 
             border-radius:20px;
@@ -56,6 +105,7 @@
                 );
         }
 
+
         .status-badge{
 
             padding:
@@ -64,6 +114,7 @@
             border-radius:
                 20px;
         }
+
 
         .btn-premium{
 
@@ -74,13 +125,86 @@
                 600;
         }
 
+
+        .stat-number{
+
+            font-size:32px;
+
+            font-weight:700;
+        }
+
     </style>
 
 </head>
 
 <body>
 
-<div class="container mt-4">
+
+
+
+<div class="sidebar">
+
+    <h4>
+
+        Front Desk
+
+    </h4>
+
+
+    <br>
+
+
+    <a href="#">
+
+        Dashboard
+
+    </a>
+
+
+    <a href="#">
+
+        Walk-In Booking
+
+    </a>
+
+
+    <a href="#">
+
+        Check-Ins
+
+    </a>
+
+
+    <a href="#">
+
+        Service Requests
+
+    </a>
+
+
+    <a href="#">
+
+        Reports
+
+    </a>
+
+
+    <a
+        href="/hotel-booking/public/logout"
+    >
+
+        Logout
+
+    </a>
+
+</div>
+
+
+
+
+
+<div class="content">
+
 
 
     <div class="hero">
@@ -106,6 +230,145 @@
 
 
 
+
+
+
+    <div class="row mb-4">
+
+
+        <div class="col-md-3">
+
+            <div class="card p-4">
+
+                <div>
+
+                    Today's Revenue
+
+                </div>
+
+
+                <div
+                    class="
+                        stat-number
+                        text-success
+                    "
+                >
+
+                    ৳<?= $revenue ?>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+
+
+        <div class="col-md-3">
+
+            <div class="card p-4">
+
+                <div>
+
+                    Occupied Rooms
+
+                </div>
+
+
+                <div
+                    class="
+                        stat-number
+                        text-danger
+                    "
+                >
+
+                    <?= $occupiedRooms ?>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+
+
+
+        <div class="col-md-3">
+
+            <div class="card p-4">
+
+                <div>
+
+                    Pending Requests
+
+                </div>
+
+
+                <div
+                    class="
+                        stat-number
+                        text-warning
+                    "
+                >
+
+                    <?= count(
+                        $requests
+                    ) ?>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+
+
+
+        <div class="col-md-3">
+
+            <div class="card p-4">
+
+                <div>
+
+                    Today's Arrivals
+
+                </div>
+
+
+                <div
+                    class="
+                        stat-number
+                        text-primary
+                    "
+                >
+
+                    <?= count(
+                        $checkins
+                    ) ?>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+
+
+    <!-- KEEPING YOUR CHECKIN TABLE -->
 
     <div class="card p-4 mb-4">
 
@@ -242,6 +505,83 @@
                         </a>
 
 
+                    </td>
+
+                </tr>
+
+            <?php endforeach; ?>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+
+
+
+
+
+
+
+    <!-- NEW SERVICE REQUESTS -->
+
+    <div class="card p-4 mb-4">
+
+        <h4 class="mb-4">
+
+            Pending Service Requests
+
+        </h4>
+
+
+        <table class="table">
+
+            <thead>
+
+            <tr>
+
+                <th>ID</th>
+
+                <th>Service</th>
+
+                <th>Status</th>
+
+            </tr>
+
+            </thead>
+
+
+            <tbody>
+
+            <?php foreach(
+                $requests as $request
+            ): ?>
+
+                <tr>
+
+                    <td>
+
+                        #<?= $request['id'] ?>
+
+                    </td>
+
+
+                    <td>
+
+                        <?= htmlspecialchars(
+                            $request['service_type']
+                        ) ?>
+
+                    </td>
+
+
+                    <td>
+
+                        <?= htmlspecialchars(
+                            $request['status']
+                        ) ?>
 
                     </td>
 
@@ -258,6 +598,11 @@
 
 
 
+
+
+
+
+    <!-- KEEPING YOUR ROOM STATUS -->
 
     <div class="card p-4">
 
@@ -362,25 +707,6 @@
 
     </div>
 
-
-
-
-    <div class="mt-4">
-
-        <a
-            href="/hotel-booking/public/logout"
-            class="
-                btn
-                btn-dark
-                btn-premium
-            "
-        >
-
-            Logout
-
-        </a>
-
-    </div>
 
 
 </div>

@@ -16,7 +16,6 @@ extends BaseModel
         float $amount
     ): bool {
 
-
         $sql = "
 
             INSERT INTO billing(
@@ -46,13 +45,11 @@ extends BaseModel
             )
         ";
 
-
         $stmt =
             $this->db
                 ->prepare(
                     $sql
                 );
-
 
         $stmt
             ->bind_param(
@@ -68,7 +65,6 @@ extends BaseModel
                 $amount
             );
 
-
         return
             $stmt
                 ->execute();
@@ -82,7 +78,6 @@ extends BaseModel
         int $bookingId,
         string $method
     ): bool {
-
 
         $sql = "
 
@@ -99,13 +94,11 @@ extends BaseModel
             WHERE booking_id=?
         ";
 
-
         $stmt =
             $this->db
                 ->prepare(
                     $sql
                 );
-
 
         $stmt
             ->bind_param(
@@ -116,7 +109,6 @@ extends BaseModel
 
                 $bookingId
             );
-
 
         return
             $stmt
@@ -131,7 +123,6 @@ extends BaseModel
         int $bookingId
     ): ?array {
 
-
         $stmt =
             $this->db
                 ->prepare(
@@ -143,26 +134,61 @@ extends BaseModel
                     "
                 );
 
-
         $stmt
             ->bind_param(
                 "i",
                 $bookingId
             );
 
-
         $stmt
             ->execute();
-
 
         $result =
             $stmt
                 ->get_result();
 
-
         return
             $result
                 ->fetch_assoc()
             ?: null;
+    }
+
+
+
+    public function
+    getRevenueToday(): float
+    {
+
+        $stmt =
+            $this->db
+                ->prepare(
+
+                    "
+                        SELECT
+                            SUM(total_amount)
+                            AS revenue
+
+                        FROM billing
+
+                        WHERE
+                            payment_status='paid'
+                        AND
+                            DATE(paid_at)=CURDATE()
+                    "
+                );
+
+        $stmt->execute();
+
+        $row =
+            $stmt
+                ->get_result()
+                ->fetch_assoc();
+
+        return
+            (float)(
+                $row['revenue']
+                ??
+                0
+            );
     }
 }

@@ -5,6 +5,7 @@ require_once __DIR__ . '/../models/BookingModel.php';
 require_once __DIR__ . '/../models/RoomModel.php';
 require_once __DIR__ . '/../core/BaseController.php';
 require_once __DIR__ . '/../models/BillingModel.php';
+require_once __DIR__ . '/../models/ServiceRequestModel.php';
 
 class ReceptionistController
 extends BaseController
@@ -19,6 +20,36 @@ extends BaseController
 
         $roomModel =
             new RoomModel();
+
+        $billingModel =
+            new BillingModel();
+
+        $serviceModel =
+            new ServiceRequestModel();
+
+
+        $rooms =
+            $roomModel
+                ->getStatusBoard();
+
+
+        $occupiedRooms = 0;
+
+
+        foreach(
+            $rooms as $room
+        ){
+
+            if(
+                $room['status']
+                ===
+                'occupied'
+            ){
+
+                $occupiedRooms++;
+            }
+        }
+
 
         $this->view(
             'receptionist/dashboard',
@@ -36,11 +67,27 @@ extends BaseController
 
                 'rooms'
                     =>
-                    $roomModel
-                        ->getStatusBoard()
+                    $rooms,
+
+                'revenue'
+                    =>
+                    $billingModel
+                        ->getRevenueToday(),
+
+                'requests'
+                    =>
+                    $serviceModel
+                        ->getPending(),
+
+                'occupiedRooms'
+                    =>
+                    $occupiedRooms
             ]
         );
     }
+
+
+
 
 
 
@@ -61,6 +108,9 @@ extends BaseController
 
 
 
+
+
+
     public function checkout(
         int $bookingId
     ): void {
@@ -75,6 +125,10 @@ extends BaseController
             "Location: /hotel-booking/public/dashboard"
         );
     }
+
+
+
+
 
 
 
@@ -117,19 +171,22 @@ extends BaseController
 
 
 
+
+
+
+
     public function processCheckin(): void
     {
-        $success =
-            (
-                new BookingModel()
-            )->checkIn(
+        (
+            new BookingModel()
+        )->checkIn(
 
-                (int)
-                $_POST['booking_id'],
+            (int)
+            $_POST['booking_id'],
 
-                (int)
-                $_POST['room_id']
-            );
+            (int)
+            $_POST['room_id']
+        );
 
 
         header(
@@ -137,58 +194,194 @@ extends BaseController
         );
     }
 
+
+
+
+
+
+
+
     public function
-payBill(): void
-{
+    payBill(): void
+    {
 
-    AuthController
-        ::requireReceptionist();
-
-
-    $bookingId =
-        (int)
-        $_POST[
-            'booking_id'
-        ];
+        AuthController
+            ::requireReceptionist();
 
 
-    $method =
-        $_POST[
-            'method'
-        ];
+        $bookingId =
+            (int)
+            $_POST[
+                'booking_id'
+            ];
 
 
-    $success =
+        $method =
+            $_POST[
+                'method'
+            ];
 
-        (
-            new BillingModel()
-        )->markPaid(
 
-            $bookingId,
+        $success =
 
-            $method
+            (
+                new BillingModel()
+            )->markPaid(
+
+                $bookingId,
+
+                $method
+            );
+
+
+        header(
+            "Content-Type: application/json"
         );
 
 
+        echo json_encode([
 
-    header(
-        "Content-Type: application/json"
-    );
+            "success"
+                =>
+                $success,
+
+            "message"
+                =>
+                $success
+                    ?
+                    "Payment completed"
+                    :
+                    "Payment failed"
+        ]);
+    }
 
 
-    echo json_encode([
 
-        "success"
-            =>
-            $success,
 
-        "message"
-            =>
-            $success
-                ?
-                "Payment completed"
-                :
-                "Payment failed"
-    ]);
-}
+
+
+
+
+    public function
+    approveEarlyCheckin(
+        int $bookingId
+    ): void
+    {
+
+        (
+            new BookingModel()
+        )->updateStatus(
+
+            $bookingId,
+
+            'confirmed'
+        );
+
+        header(
+            "Location: /hotel-booking/public/dashboard"
+        );
+    }
+
+
+
+
+
+
+
+
+    public function
+    approveLateCheckout(
+        int $bookingId
+    ): void
+    {
+
+        (
+            new BookingModel()
+        )->extendCheckout(
+            $bookingId
+        );
+
+        header(
+            "Location: /hotel-booking/public/dashboard"
+        );
+    }
+
+
+
+
+
+
+
+
+    public function
+    updateServiceRequest(): void
+    {
+
+        (
+            new ServiceRequestModel()
+        )->updateStatus(
+
+            (int)
+            $_POST[
+                'request_id'
+            ],
+
+            $_POST[
+                'status'
+            ]
+        );
+
+        header(
+            "Location: /hotel-booking/public/dashboard"
+        );
+    }
+
+
+
+
+
+
+
+
+    public function
+    report(): void
+    {
+
+        AuthController
+            ::requireReceptionist();
+
+
+        $bookingModel =
+            new BookingModel();
+
+        $billingModel =
+            new BillingModel();
+
+
+        $this->view(
+
+            'receptionist/report',
+
+            [
+
+                'arrivals'
+                    =>
+                    count(
+
+                        $bookingModel
+                            ->getTodaysCheckins()
+                    ),
+
+                'departures'
+                    =>
+                    $bookingModel
+                        ->getTodaysDepartures(),
+
+                'revenue'
+                    =>
+                    $billingModel
+                        ->getRevenueToday()
+            ]
+        );
+    }
 }

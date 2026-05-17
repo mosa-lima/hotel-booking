@@ -10,8 +10,10 @@ function payBill(
             .value;
 
 
+
     const xhr =
         new XMLHttpRequest();
+
 
 
     xhr.open(
@@ -22,12 +24,14 @@ function payBill(
     );
 
 
+
     xhr.setRequestHeader(
 
         "Content-Type",
 
         "application/x-www-form-urlencoded"
     );
+
 
 
 
@@ -41,18 +45,43 @@ function payBill(
                 );
 
 
-            alert(
-                response.message
-            );
-
 
             if(
                 response.success
             ){
 
-                location.reload();
+                document
+                    .getElementById(
+                        "payment_status"
+                    )
+                    .className =
+
+                    "badge bg-success mb-3";
+
+
+
+                document
+                    .getElementById(
+                        "payment_status"
+                    )
+                    .innerText =
+
+                    "Paid ✓";
+
+
+
+                alert(
+                    "Payment completed successfully"
+                );
+
+            }else{
+
+                alert(
+                    "Payment failed"
+                );
             }
         };
+
 
 
 

@@ -369,7 +369,7 @@
         "
     >
 
-        Receptionist Portal • PHP MVC
+        Hotel Booking System &copy; 2024
 
     </div>
 

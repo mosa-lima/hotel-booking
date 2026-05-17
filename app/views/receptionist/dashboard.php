@@ -154,39 +154,25 @@
     <br>
 
 
-    <a href="#">
+   <a href="/hotel-booking/public/dashboard">
+Dashboard
+</a>
 
-        Dashboard
+<a href="/hotel-booking/public/walkin">
+Walk-In Booking
+</a>
 
-    </a>
+<a href="/hotel-booking/public/checkins">
+Check-Ins
+</a>
 
+<a href="/hotel-booking/public/services">
+Service Requests
+</a>
 
-    <a href="#">
-
-        Walk-In Booking
-
-    </a>
-
-
-    <a href="#">
-
-        Check-Ins
-
-    </a>
-
-
-    <a href="#">
-
-        Service Requests
-
-    </a>
-
-
-    <a href="#">
-
-        Reports
-
-    </a>
+<a href="/hotel-booking/public/report">
+Reports
+</a>
 
 
     <a
@@ -525,78 +511,185 @@
 
 
 
-    <!-- NEW SERVICE REQUESTS -->
+   <!-- NEW SERVICE REQUESTS -->
 
-    <div class="card p-4 mb-4">
+<div class="card p-4 mb-4">
 
-        <h4 class="mb-4">
+    <h4 class="mb-4">
 
-            Pending Service Requests
+        Pending Service Requests
 
-        </h4>
+    </h4>
 
 
-        <table class="table">
+    <table class="table table-hover">
 
-            <thead>
+        <thead>
+
+        <tr>
+
+            <th>ID</th>
+
+            <th>Service</th>
+
+            <th>Status</th>
+
+            <th>Action</th>
+
+        </tr>
+
+        </thead>
+
+
+        <tbody>
+
+        <?php foreach(
+            $requests as $request
+        ): ?>
+
 
             <tr>
 
-                <th>ID</th>
-
-                <th>Service</th>
-
-                <th>Status</th>
-
-            </tr>
-
-            </thead>
 
 
-            <tbody>
+                <td>
 
-            <?php foreach(
-                $requests as $request
-            ): ?>
+                    #<?= htmlspecialchars(
+                        $request['id']
+                    ) ?>
 
-                <tr>
-
-                    <td>
-
-                        #<?= $request['id'] ?>
-
-                    </td>
+                </td>
 
 
-                    <td>
-
-                        <?= htmlspecialchars(
-                            $request['service_type']
-                        ) ?>
-
-                    </td>
 
 
-                    <td>
+
+                <td>
+
+                    <?= htmlspecialchars(
+                        $request['service_type']
+                    ) ?>
+
+                </td>
+
+
+
+
+
+
+                <td>
+
+                    <span
+                        class="
+                            badge
+                            bg-warning
+                        "
+                    >
 
                         <?= htmlspecialchars(
                             $request['status']
                         ) ?>
 
-                    </td>
+                    </span>
 
-                </tr>
-
-            <?php endforeach; ?>
-
-            </tbody>
-
-        </table>
-
-    </div>
+                </td>
 
 
 
+
+
+
+
+                <td>
+
+                    <form
+                        method="POST"
+                        action="/hotel-booking/public/service/update"
+                    >
+
+
+                        <input
+                            type="hidden"
+                            name="request_id"
+                            value="<?= $request['id'] ?>"
+                        >
+
+
+
+                        <select
+                            name="status"
+                            class="
+                                form-select
+                                mb-2
+                            "
+                        >
+
+                            <option
+                                value="pending"
+                                <?= $request['status']=='pending' ? 'selected' : '' ?>
+                            >
+
+                                pending
+
+                            </option>
+
+
+                            <option
+                                value="in_progress"
+                                <?= $request['status']=='in_progress' ? 'selected' : '' ?>
+                            >
+
+                                in_progress
+
+                            </option>
+
+
+                            <option
+                                value="completed"
+                                <?= $request['status']=='completed' ? 'selected' : '' ?>
+                            >
+
+                                completed
+
+                            </option>
+
+
+                        </select>
+
+
+
+
+
+                        <button
+                            class="
+                                btn
+                                btn-primary
+                                btn-sm
+                            "
+                        >
+
+                            Update
+
+                        </button>
+
+
+                    </form>
+
+                </td>
+
+
+
+            </tr>
+
+
+        <?php endforeach; ?>
+
+
+        </tbody>
+
+    </table>
+
+</div>
 
 
 

@@ -128,7 +128,58 @@ switch ($url) {
 
     break;
 
+    case 'walkin':
 
+    (
+        new ReceptionistController()
+    )->walkin();
+
+    break;
+
+
+case 'checkins':
+
+    (
+        new ReceptionistController()
+    )->dashboard();
+
+    break;
+
+
+case 'services':
+
+    (
+        new ReceptionistController()
+    )->dashboard();
+
+    break;
+
+
+case 'report':
+
+    (
+        new ReceptionistController()
+    )->report();
+
+    break;
+
+case 'walkin/create':
+
+    (
+        new ReceptionistController()
+    )->createWalkin();
+
+    break;
+
+
+    case 'service/update':
+
+    (
+        new ReceptionistController()
+    )->updateServiceRequest();
+
+    break;
+    
     default:
 
         echo "404";

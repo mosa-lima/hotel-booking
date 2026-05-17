@@ -23,14 +23,9 @@
     <style>
 
         body{
-
-            font-family:
-                Poppins;
-
-            background:
-                #eef2f7;
+            font-family:Poppins;
+            background:#eef2f7;
         }
-
 
         .header-box{
 
@@ -41,27 +36,20 @@
                     #2563eb
                 );
 
-            color:
-                white;
+            color:white;
 
-            border-radius:
-                20px;
+            border-radius:20px;
 
-            padding:
-                30px;
+            padding:30px;
 
-            margin-bottom:
-                30px;
+            margin-bottom:30px;
         }
-
 
         .card{
 
-            border:
-                none;
+            border:none;
 
-            border-radius:
-                20px;
+            border-radius:20px;
 
             box-shadow:
                 0 10px 30px
@@ -73,54 +61,35 @@
                 );
         }
 
-
         .btn-premium{
 
-            border-radius:
-                25px;
+            border-radius:25px;
 
-            font-weight:
-                600;
+            font-weight:600;
         }
-
 
         .info-box{
 
-            background:
-                #f8fafc;
+            background:#f8fafc;
 
-            border-radius:
-                15px;
+            border-radius:15px;
 
-            padding:
-                20px;
+            padding:20px;
         }
 
     </style>
 
 </head>
 
-
-
 <body>
 
 
 
-<div
-    class="
-        container
-        mt-4
-        mb-5
-    "
->
+<div class="container mt-4 mb-5">
 
 
 
-    <div
-        class="
-            header-box
-        "
-    >
+    <div class="header-box">
 
         <h2>
 
@@ -133,9 +102,7 @@
 
             Booking #
 
-            <?= htmlspecialchars(
-                $booking['id']
-            ) ?>
+            <?= $booking['id'] ?>
 
         </p>
 
@@ -145,35 +112,21 @@
 
 
 
-    <div
-        class="
-            row
-        "
-    >
+
+    <div class="row">
 
 
 
 
-        <div
-            class="
-                col-md-8
-            "
-        >
+        <div class="col-md-8">
 
 
-            <div
-                class="
-                    card
-                    p-4
-                "
-            >
+
+            <div class="card p-4">
 
 
-                <h4
-                    class="
-                        mb-4
-                    "
-                >
+
+                <h4 class="mb-4">
 
                     Room Assignment
 
@@ -181,10 +134,51 @@
 
 
 
+
+
+                <!-- DEBUG INFO -->
+
+
+                <div
+                    class="
+                        alert
+                        alert-info
+                    "
+                >
+
+                    Booking Room Type ID:
+
+                    <strong>
+
+                        <?= $booking['room_type_id'] ?>
+
+                    </strong>
+
+                    <br>
+
+                    Available Rooms:
+
+                    <strong>
+
+                        <?= count(
+                            $rooms
+                        ) ?>
+
+                    </strong>
+
+                </div>
+
+
+
+
+
+
+
                 <form
                     method="POST"
                     action="/hotel-booking/public/checkin/process"
                 >
+
 
 
                     <input
@@ -196,15 +190,15 @@
 
 
 
-                    <label
-                        class="
-                            mb-2
-                        "
-                    >
+
+
+                    <label class="mb-2">
 
                         Select Available Room
 
                     </label>
+
+
 
 
 
@@ -219,34 +213,62 @@
                     >
 
 
-                        <?php foreach(
-                            $rooms as $room
+
+
+                        <?php if(
+                            count(
+                                $rooms
+                            ) > 0
                         ): ?>
 
 
-                            <option
-                                value="<?= $room['id'] ?>"
-                            >
 
-                                Room
 
-                                <?= htmlspecialchars(
-                                    $room['room_number']
-                                ) ?>
+                            <?php foreach(
+                                $rooms as $room
+                            ): ?>
 
-                                —
 
-                                Floor
 
-                                <?= htmlspecialchars(
-                                    $room['floor']
-                                ) ?>
+                                <option
+                                    value="<?= $room['id'] ?>"
+                                >
 
+                                    Room
+
+                                    <?= $room['room_number'] ?>
+
+                                    —
+
+                                    Floor
+
+                                    <?= $room['floor'] ?>
+
+
+                                </option>
+
+
+
+                            <?php endforeach; ?>
+
+
+
+
+                        <?php else: ?>
+
+
+
+                            <option>
+
+                                No available rooms found
 
                             </option>
 
 
-                        <?php endforeach; ?>
+
+                        <?php endif; ?>
+
+
 
 
                     </select>
@@ -256,15 +278,14 @@
 
 
 
-                    <label
-                        class="
-                            mb-2
-                        "
-                    >
+
+
+                    <label class="mb-2">
 
                         Payment Method
 
                     </label>
+
 
 
 
@@ -303,30 +324,6 @@
 
 
 
-                    <label
-                        class="
-                            mb-2
-                        "
-                    >
-
-                        Loyalty Discount
-
-                    </label>
-
-
-
-                    <input
-                        type="number"
-                        class="
-                            form-control
-                            mb-4
-                        "
-                        placeholder="0"
-                    >
-
-
-
-
 
 
                     <button
@@ -341,6 +338,9 @@
                         Confirm Check-in
 
                     </button>
+
+
+
 
 
 
@@ -361,6 +361,9 @@
 
 
 
+
+
+
                     <a
                         href="/hotel-booking/public/dashboard"
                         class="
@@ -376,9 +379,13 @@
                     </a>
 
 
+
+
                 </form>
 
+
             </div>
+
 
         </div>
 
@@ -387,29 +394,15 @@
 
 
 
-
-        <div
-            class="
-                col-md-4
-            "
-        >
+        <div class="col-md-4">
 
 
 
-
-            <div
-                class="
-                    card
-                    p-4
-                "
-            >
+            <div class="card p-4">
 
 
-                <h5
-                    class="
-                        mb-4
-                    "
-                >
+
+                <h5 class="mb-4">
 
                     Booking Summary
 
@@ -417,186 +410,43 @@
 
 
 
+                <div class="info-box mb-3">
 
+                    Booking:
 
-                <div
-                    class="
-                        info-box
-                        mb-3
-                    "
-                >
-
-                    <strong>
-
-                        Booking ID:
-
-                    </strong>
-
-                    <br>
-
-                    #<?= htmlspecialchars(
-                        $booking['id']
-                    ) ?>
-
+                    #<?= $booking['id'] ?>
 
                 </div>
 
 
 
+                <div class="info-box mb-3">
 
+                    Guests:
 
-
-                <div
-                    class="
-                        info-box
-                        mb-3
-                    "
-                >
-
-                    <strong>
-
-                        Guest Count:
-
-                    </strong>
-
-                    <br>
-
-                    <?= htmlspecialchars(
-                        $booking['num_guests']
-                    ) ?>
-
+                    <?= $booking['num_guests'] ?>
 
                 </div>
 
 
 
+                <div class="info-box mb-3">
 
+                    Check-in:
 
-
-
-                <div
-                    class="
-                        info-box
-                        mb-3
-                    "
-                >
-
-                    <strong>
-
-                        Check-in:
-
-                    </strong>
-
-                    <br>
-
-                    <?= htmlspecialchars(
-                        $booking['checkin_date']
-                    ) ?>
-
+                    <?= $booking['checkin_date'] ?>
 
                 </div>
 
 
 
+                <div class="info-box mb-3">
 
+                    Check-out:
 
-
-
-                <div
-                    class="
-                        info-box
-                    "
-                >
-
-                    <strong>
-
-                        Check-out:
-
-                    </strong>
-
-                    <br>
-
-                    <?= htmlspecialchars(
-                        $booking['checkout_date']
-                    ) ?>
-
+                    <?= $booking['checkout_date'] ?>
 
                 </div>
-
-
-
-
-
-
-                <hr>
-
-
-
-
-
-
-                <h5>
-
-                    Billing Preview
-
-                </h5>
-
-
-
-
-
-                <p>
-
-                    Room Charge:
-
-                    <strong>
-
-                        ৳
-
-                        <?= htmlspecialchars(
-                            $booking['total_price']
-                        ) ?>
-
-                    </strong>
-
-                </p>
-
-
-
-
-
-
-                <p>
-
-                    Taxes:
-
-                    <strong>
-
-                        ৳0
-
-                    </strong>
-
-                </p>
-
-
-
-
-
-
-                <p>
-
-                    Discount:
-
-                    <strong>
-
-                        ৳0
-
-                    </strong>
-
-                </p>
-
-
-
 
 
 
@@ -619,33 +469,18 @@
 
 
 
-
-
-
                 <h4>
 
-                    Total:
-
-                    <span
-                        class="
-                            text-success
-                        "
-                    >
-
-                        ৳
-
-                        <?= htmlspecialchars(
-                            $booking['total_price']
-                        ) ?>
-
-                    </span>
+                    ৳<?= $booking['total_price'] ?>
 
                 </h4>
 
 
             </div>
 
+
         </div>
+
 
 
     </div>
@@ -653,6 +488,7 @@
 
 
 </div>
+
 
 
 <script src="/hotel-booking/public/assets/js/payment.js"></script>

@@ -384,4 +384,78 @@ extends BaseController
             ]
         );
     }
+
+    public function walkin(): void
+{
+    AuthController
+        ::requireReceptionist();
+
+    $this->view(
+        'receptionist/walkin'
+    );
+}
+public function
+createWalkin(): void
+{
+
+    AuthController
+        ::requireReceptionist();
+
+
+    $roomModel =
+        new RoomModel();
+
+
+    $price =
+
+        $roomModel
+            ->getTypePrice(
+
+                (int)
+                $_POST[
+                    'room_type_id'
+                ]
+            );
+
+
+
+    $bookingModel =
+        new BookingModel();
+
+
+    $bookingModel
+        ->create(
+
+            (int)
+            $_POST[
+                'guest_id'
+            ],
+
+            (int)
+            $_POST[
+                'room_type_id'
+            ],
+
+            $_POST[
+                'checkin_date'
+            ],
+
+            $_POST[
+                'checkout_date'
+            ],
+
+            (int)
+            $_POST[
+                'num_guests'
+            ],
+
+            $price
+        );
+
+
+
+    header(
+        "Location: /hotel-booking/public/dashboard"
+    );
+}
 }

@@ -10,6 +10,7 @@ const renderBadge = (value, extra = "") => {
   const classes = {
     available: "success",
     completed: "success",
+    done: "success",
     resolved: "success",
     dirty: "warning",
     pending: "warning",
@@ -106,9 +107,9 @@ const refreshTasks = async () => {
         <p>${task.notes || "No notes provided."}</p>
         ${task.completion_notes ? `<p class="muted">Completion notes: ${task.completion_notes}</p>` : ""}
         <div class="action-row">
-          ${task.status !== "in_progress" && task.status !== "completed" ? `<button class="btn secondary js-task-status" data-id="${task.id}" data-status="in_progress">Mark In Progress</button>` : ""}
-          ${task.status !== "completed" ? `<button class="btn primary js-task-complete" data-id="${task.id}">Mark Done</button>` : ""}
-          ${task.status === "completed" ? `<button class="btn ghost js-room-ready" data-id="${task.id}">Mark Room Ready</button>` : ""}
+          ${task.status !== "in_progress" && task.status !== "done" ? `<button class="btn secondary js-task-status" data-id="${task.id}" data-status="in_progress">Mark In Progress</button>` : ""}
+          ${task.status !== "done" ? `<button class="btn primary js-task-complete" data-id="${task.id}">Mark Done</button>` : ""}
+          ${task.status === "done" ? `<button class="btn ghost js-room-ready" data-id="${task.id}">Mark Room Ready</button>` : ""}
         </div>
       </article>
     `)
@@ -293,7 +294,7 @@ document.body.addEventListener("click", async (event) => {
     const formData = new FormData();
     formData.set("action", "update_status");
     formData.set("task_id", target.dataset.id);
-    formData.set("status", "completed");
+    formData.set("status", "done");
     formData.set("completion_notes", notes);
     const data = await postForm("api/tasks.php", formData);
     showToast(data.message, data.success ? "success" : "error");

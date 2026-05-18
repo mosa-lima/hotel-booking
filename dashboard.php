@@ -177,7 +177,7 @@ $history = fetch_room_history($pdo);
                             <option value="">All statuses</option>
                             <option value="pending">Pending</option>
                             <option value="in_progress">In Progress</option>
-                            <option value="completed">Completed</option>
+                            <option value="done">Done</option>
                         </select>
                         <button type="submit" class="btn secondary">Apply</button>
                     </form>
@@ -196,10 +196,10 @@ $history = fetch_room_history($pdo);
                                 </div>
                                 <p><?= htmlspecialchars($task['notes']); ?></p>
                                 <div class="action-row">
-                                    <?php if ($task['status'] !== 'in_progress' && $task['status'] !== 'completed'): ?>
+                                    <?php if ($task['status'] !== 'in_progress' && $task['status'] !== 'done'): ?>
                                         <button class="btn secondary js-task-status" data-id="<?= (int) $task['id']; ?>" data-status="in_progress">Mark In Progress</button>
                                     <?php endif; ?>
-                                    <?php if ($task['status'] !== 'completed'): ?>
+                                    <?php if ($task['status'] !== 'done'): ?>
                                         <button class="btn primary js-task-complete" data-id="<?= (int) $task['id']; ?>">Mark Done</button>
                                     <?php endif; ?>
                                     <?php if (room_can_be_ready($task)): ?>

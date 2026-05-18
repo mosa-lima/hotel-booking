@@ -26,13 +26,13 @@ if ($action === 'create') {
     $scheduledDate = post_value('scheduled_date');
     $notes = post_value('notes');
 
-    if ($roomId <= 0 || !in_array($taskType, ['cleaning', 'inspection'], true) || !in_array($priority, ['normal', 'urgent'], true) || $scheduledDate === '') {
+    if ($roomId <= 0 || !in_array($taskType, ['cleaning', 'inspection', 'maintenance'], true) || !in_array($priority, ['normal', 'urgent'], true) || $scheduledDate === '') {
         json_response(['success' => false, 'message' => 'Please fill in all task fields correctly.'], 422);
     }
 
     $stmt = $pdo->prepare(
-        "INSERT INTO housekeeping_tasks (room_id, task_type, priority, status, scheduled_date, notes, assigned_to, created_by, created_at)
-         VALUES (:room_id, :task_type, :priority, 'pending', :scheduled_date, :notes, :assigned_to, :created_by, NOW())"
+        "INSERT INTO housekeeping_tasks (room_id, task_type, priority, status, scheduled_date, notes, assigned_to, created_at)
+         VALUES (:room_id, :task_type, :priority, 'pending', :scheduled_date, :notes, :assigned_to, NOW())"
     );
     $stmt->execute([
         'room_id' => $roomId,
@@ -41,7 +41,6 @@ if ($action === 'create') {
         'scheduled_date' => $scheduledDate,
         'notes' => $notes,
         'assigned_to' => $user['id'],
-        'created_by' => $user['id'],
     ]);
 
     json_response(['success' => true, 'message' => 'Housekeeping task created successfully.']);
@@ -51,7 +50,7 @@ if ($action === 'update_status') {
     $taskId = (int) post_value('task_id');
     $status = post_value('status');
 
-    if ($taskId <= 0 || !in_array($status, ['in_progress', 'completed'], true)) {
+    if ($taskId <= 0 || !in_array($status, ['in_progress', 'done'], true)) {
         json_response(['success' => false, 'message' => 'Invalid task status update.'], 422);
     }
 
@@ -84,7 +83,7 @@ if ($action === 'update_status') {
 
     $stmt = $pdo->prepare(
         "UPDATE housekeeping_tasks
-         SET status = 'completed',
+         SET status = 'done',
              completion_notes = :completion_notes,
              completed_at = NOW(),
              completed_by = :completed_by
@@ -111,7 +110,7 @@ if ($action === 'mark_ready') {
     $stmt->execute([$taskId]);
     $task = $stmt->fetch();
 
-    if (!$task || $task['status'] !== 'completed') {
+    if (!$task || $task['status'] !== 'done') {
         json_response(['success' => false, 'message' => 'Only completed tasks can clear a room for check-in.'], 422);
     }
 

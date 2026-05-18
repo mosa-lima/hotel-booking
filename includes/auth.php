@@ -31,10 +31,11 @@ function current_user(): ?array
 function attempt_login(string $email, string $password): bool
 {
     $stmt = db()->prepare(
-        "SELECT id, full_name, email, password_hash, role, phone
+        "SELECT id, name AS full_name, email, password_hash, role, phone
          FROM users
          WHERE email = :email
-           AND role = 'housekeeping_supervisor'
+           AND role = 'housekeeping'
+           AND is_active = 1
          LIMIT 1"
     );
     $stmt->execute(['email' => $email]);

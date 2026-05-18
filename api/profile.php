@@ -25,10 +25,10 @@ if ($password !== '' && strlen($password) < 6) {
 }
 
 if ($password !== '') {
-    $stmt = db()->prepare("UPDATE users SET full_name = ?, phone = ?, password_hash = ? WHERE id = ?");
+    $stmt = db()->prepare("UPDATE users SET name = ?, phone = ?, password_hash = ? WHERE id = ?");
     $stmt->execute([$fullName, $phone, password_hash($password, PASSWORD_DEFAULT), $user['id']]);
 } else {
-    $stmt = db()->prepare("UPDATE users SET full_name = ?, phone = ? WHERE id = ?");
+    $stmt = db()->prepare("UPDATE users SET name = ?, phone = ? WHERE id = ?");
     $stmt->execute([$fullName, $phone, $user['id']]);
 }
 

@@ -35,7 +35,7 @@ function get_value(string $key, string $default = ''): string
 function status_badge_class(string $status): string
 {
     return match ($status) {
-        'available', 'completed', 'resolved' => 'success',
+        'available', 'completed', 'done', 'resolved' => 'success',
         'dirty', 'pending' => 'warning',
         'in_progress' => 'info',
         'maintenance', 'urgent', 'high' => 'danger',
@@ -52,7 +52,7 @@ function task_status_label(string $status): string
 
 function room_can_be_ready(array $task): bool
 {
-    return $task['status'] === 'completed';
+    return $task['status'] === 'done' || $task['status'] === 'completed';
 }
 
 function fetch_dashboard_stats(PDO $pdo): array
@@ -63,7 +63,7 @@ function fetch_dashboard_stats(PDO $pdo): array
 
     $stmt = $pdo->prepare(
         "SELECT COUNT(*) FROM housekeeping_tasks
-         WHERE status = 'completed' AND DATE(completed_at) = CURDATE()"
+         WHERE status = 'done' AND DATE(completed_at) = CURDATE()"
     );
     $stmt->execute();
     $completedToday = (int) $stmt->fetchColumn();
@@ -79,7 +79,7 @@ function fetch_dashboard_stats(PDO $pdo): array
 function fetch_room_board(PDO $pdo): array
 {
     $stmt = $pdo->query(
-        "SELECT r.id, r.room_number, r.floor, r.type, r.status, r.needs_inspection,
+        "SELECT r.id, r.room_number, r.floor, rt.name AS type, r.status, r.needs_inspection,
                 CASE
                     WHEN EXISTS (
                         SELECT 1
@@ -91,6 +91,7 @@ function fetch_room_board(PDO $pdo): array
                     ELSE 0
                 END AS has_open_task
          FROM rooms r
+         INNER JOIN room_types rt ON rt.id = r.room_type_id
          ORDER BY r.floor, r.room_number"
     );
 
@@ -101,7 +102,7 @@ function fetch_today_tasks(PDO $pdo, string $priority = '', string $status = '')
 {
     $sql = "SELECT ht.id, ht.task_type, ht.priority, ht.status, ht.scheduled_date, ht.notes,
                    ht.completion_notes, ht.completed_at, r.room_number, r.status AS room_status,
-                   u.full_name AS assigned_to_name
+                   u.name AS assigned_to_name
             FROM housekeeping_tasks ht
             INNER JOIN rooms r ON r.id = ht.room_id
             LEFT JOIN users u ON u.id = ht.assigned_to
@@ -118,7 +119,7 @@ function fetch_today_tasks(PDO $pdo, string $priority = '', string $status = '')
         $params['status'] = $status;
     }
 
-    $sql .= " ORDER BY FIELD(ht.priority, 'urgent', 'normal'), FIELD(ht.status, 'pending', 'in_progress', 'completed'), r.room_number";
+    $sql .= " ORDER BY FIELD(ht.priority, 'urgent', 'normal'), FIELD(ht.status, 'pending', 'in_progress', 'done'), r.room_number";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
@@ -145,22 +146,24 @@ function fetch_upcoming_activity(PDO $pdo): array
     $tomorrow = date('Y-m-d', strtotime('+1 day'));
 
     $checkOutStmt = $pdo->prepare(
-        "SELECT b.id, b.guest_name, b.checkout_at, b.status, r.room_number
+        "SELECT b.id, u.name AS guest_name, b.checkout_date AS checkout_at, b.status, r.room_number
          FROM bookings b
          INNER JOIN rooms r ON r.id = b.room_id
-         WHERE DATE(b.checkout_at) IN (?, ?)
+         INNER JOIN users u ON u.id = b.guest_id
+         WHERE DATE(b.checkout_date) IN (?, ?)
            AND b.status IN ('confirmed', 'checked_in')
-         ORDER BY b.checkout_at ASC"
+         ORDER BY b.checkout_date ASC"
     );
     $checkOutStmt->execute([$today, $tomorrow]);
 
     $checkInStmt = $pdo->prepare(
-        "SELECT b.id, b.guest_name, b.checkin_at, b.status, r.room_number
+        "SELECT b.id, u.name AS guest_name, b.checkin_date AS checkin_at, b.status, r.room_number
          FROM bookings b
          INNER JOIN rooms r ON r.id = b.room_id
-         WHERE DATE(b.checkin_at) IN (?, ?)
+         INNER JOIN users u ON u.id = b.guest_id
+         WHERE DATE(b.checkin_date) IN (?, ?)
            AND b.status = 'confirmed'
-         ORDER BY b.checkin_at ASC"
+         ORDER BY b.checkin_date ASC"
     );
     $checkInStmt->execute([$today, $tomorrow]);
 
@@ -182,7 +185,7 @@ function fetch_daily_report(PDO $pdo): array
 
     $stmt = $pdo->query(
         "SELECT ht.id, ht.task_type, ht.priority, ht.status, ht.scheduled_date, ht.completed_at,
-                r.room_number, u.full_name AS assigned_to_name
+                r.room_number, u.name AS assigned_to_name
          FROM housekeeping_tasks ht
          INNER JOIN rooms r ON r.id = ht.room_id
          LEFT JOIN users u ON u.id = ht.assigned_to
@@ -193,7 +196,7 @@ function fetch_daily_report(PDO $pdo): array
 
     foreach ($tasks as $task) {
         $report['assigned']++;
-        if ($task['status'] === 'completed') {
+        if ($task['status'] === 'done') {
             $report['completed']++;
         } else {
             $report['pending']++;
@@ -217,11 +220,11 @@ function fetch_daily_report(PDO $pdo): array
 function fetch_room_history(PDO $pdo, int $roomId = 0): array
 {
     $sql = "SELECT ht.id, ht.task_type, ht.priority, ht.completed_at, ht.completion_notes,
-                   r.room_number, u.full_name AS completed_by_name
+                   r.room_number, u.name AS completed_by_name
             FROM housekeeping_tasks ht
             INNER JOIN rooms r ON r.id = ht.room_id
             LEFT JOIN users u ON u.id = ht.completed_by
-            WHERE ht.status = 'completed'";
+            WHERE ht.status = 'done'";
     $params = [];
 
     if ($roomId > 0) {

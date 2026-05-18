@@ -1,239 +1,120 @@
 # Housekeeping Supervisor Commit Plan
 
-This file breaks your **Role 3 - Housekeeping Supervisor** work into **20 functional commits** so you can commit and push them yourself in a clean, believable order.
+This plan is updated for your current situation:
 
-Use this plan only if your teacher wants progress visualization. Since the project is already completed locally, you should now commit the files in small logical batches following the order below.
+- You already pushed the old **20 commits**.
+- Do not rewrite or redo commits 1-20.
+- Add only the new commits **21-29** for the updated Word-file database and changed Role 3 code.
+- After creating commits 21-29 locally, you can push them yourself.
 
-## Before you start
+## Project Folder
 
-Open PowerShell in your project folder:
+Open PowerShell in this project:
 
 ```powershell
-cd "D:\Hotel Booking System"
+cd "E:\Supervisor\hotel-booking"
 git status
 ```
 
-If Git is not initialized yet:
+## What Changed Now
 
-```powershell
-git init
-git branch -M main
-```
+The new update makes Role 3 match the Word file better:
 
-If your GitHub repo is not connected yet:
+- Database now uses the shared hotel schema.
+- `users` table now has `name`, `role`, `is_active`, `nationality`, `id_number`, and profile fields.
+- `room_types` table was added.
+- `rooms` now links to `room_types`.
+- `bookings` now links to guest users and room types.
+- Missing shared tables were added: `billing`, `service_requests`, `seasonal_pricing`, `reviews`, `loyalty_points`.
+- Housekeeping tasks now use Word-file status `done`.
+- Maintenance reports now save `reported_by` and `resolved_at`.
+- PHP code was updated to work with the new database names.
+- XAMPP database import and localhost testing were completed.
 
-```powershell
-git remote add origin https://github.com/mosa-lima/hotel-booking.git
-```
+## New Commit Breakdown
 
-Set your Git username and email for this project:
+Use these commits after your existing 20 commits.
 
-```powershell
-git config user.name "mr-man01"
-git config user.email "86ustanim36@gmail.com"
-```
-
-Check that Git saved them correctly:
-
-```powershell
-git config user.name
-git config user.email
-```
-
-## Important note
-
-To make the commit history look natural, do **not** add every file in the first commit. Stage only the files listed for each step.
-
-Use this pattern for each commit:
-
-```powershell
-git add <files>
-git commit -m "<commit message>"
-```
-
-## 20 commit breakdown
-
-### 1. Project bootstrap
+### 21. Upgrade database to shared hotel schema
 
 Purpose:
-Create the base PHP project structure for the Housekeeping Supervisor module.
+Replace the old housekeeping-only database with the shared hotel database required by the Word file.
 
 Files:
-- `index.php`
-- `dashboard.php`
-- `logout.php`
-- `includes/config.php`
-- `includes/db.php`
+- `sql/housekeeping_supervisor.sql`
 
-Commit message:
+Commit:
 
 ```powershell
-git add index.php dashboard.php logout.php includes/config.php includes/db.php
-git commit -m "Initialize Housekeeping Supervisor PHP project structure"
+git add sql/housekeeping_supervisor.sql
+git commit -m "Upgrade housekeeping database to shared hotel schema"
 ```
 
-### 2. Shared helper utilities
+### 22. Add shared hotel tables and relationships
 
 Purpose:
-Add common helper functions for JSON responses, dates, labels, and dashboard data formatting.
+Add the missing shared tables such as room types, billing, service requests, seasonal pricing, reviews, and loyalty points.
 
 Files:
-- `includes/helpers.php`
+- `sql/housekeeping_supervisor.sql`
 
-Commit message:
+Commit:
 
 ```powershell
-git add includes/helpers.php
-git commit -m "Add shared helper utilities for housekeeping module"
+git add sql/housekeeping_supervisor.sql
+git commit -m "Add shared hotel tables for assignment schema"
 ```
 
-### 3. Authentication system
+### 23. Add updated role three seed data
 
 Purpose:
-Add login session handling, access protection, and logout flow for the Housekeeping Supervisor role.
+Add demo data for the housekeeping supervisor, guests, room types, rooms, bookings, housekeeping tasks, and maintenance reports.
+
+Files:
+- `sql/housekeeping_supervisor.sql`
+
+Commit:
+
+```powershell
+git add sql/housekeeping_supervisor.sql
+git commit -m "Add updated seed data for housekeeping supervisor role"
+```
+
+### 24. Align login and profile with shared users table
+
+Purpose:
+Update authentication and profile updates to use `users.name`, `role = 'housekeeping'`, and `is_active`.
 
 Files:
 - `includes/auth.php`
-- `index.php`
-- `logout.php`
+- `api/profile.php`
 
-Commit message:
-
-```powershell
-git add includes/auth.php index.php logout.php
-git commit -m "Implement supervisor authentication and session management"
-```
-
-### 4. Database schema setup
-
-Purpose:
-Create MySQL tables for users, rooms, bookings, housekeeping tasks, and maintenance reports.
-
-Files:
-- `sql/housekeeping_supervisor.sql`
-
-Commit message:
+Commit:
 
 ```powershell
-git add sql/housekeeping_supervisor.sql
-git commit -m "Create database schema for housekeeping operations"
+git add includes/auth.php api/profile.php
+git commit -m "Align supervisor account code with shared users table"
 ```
 
-### 5. Seed demo data
+### 25. Update dashboard queries for room types and bookings
 
 Purpose:
-Insert demo supervisor account, sample rooms, bookings, tasks, and maintenance reports.
-
-Files:
-- `sql/housekeeping_supervisor.sql`
-
-Commit message:
-
-```powershell
-git add sql/housekeeping_supervisor.sql
-git commit -m "Add seed data for rooms bookings tasks and maintenance"
-```
-
-### 6. Dashboard statistics backend
-
-Purpose:
-Prepare the backend logic that calculates dirty rooms, pending inspections, open maintenance, and completed tasks.
+Update helper queries to join `rooms` with `room_types`, read guest names from `users`, and use `checkin_date` / `checkout_date`.
 
 Files:
 - `includes/helpers.php`
-- `api/dashboard_stats.php`
 
-Commit message:
-
-```powershell
-git add includes/helpers.php api/dashboard_stats.php
-git commit -m "Add backend support for housekeeping dashboard statistics"
-```
-
-### 7. Dashboard overview UI
-
-Purpose:
-Show the top-level supervisor dashboard cards with daily housekeeping metrics.
-
-Files:
-- `dashboard.php`
-- `assets/css/style.css`
-
-Commit message:
+Commit:
 
 ```powershell
-git add dashboard.php assets/css/style.css
-git commit -m "Build housekeeping dashboard overview interface"
+git add includes/helpers.php
+git commit -m "Update housekeeping dashboard queries for shared schema"
 ```
 
-### 8. Room status board backend
+### 26. Convert task workflow to done status
 
 Purpose:
-Add backend support for viewing every room and its current housekeeping status.
-
-Files:
-- `includes/helpers.php`
-- `api/room_statuses.php`
-
-Commit message:
-
-```powershell
-git add includes/helpers.php api/room_statuses.php
-git commit -m "Implement backend for full room status board"
-```
-
-### 9. Live AJAX room board
-
-Purpose:
-Display the full room board in the dashboard and refresh room statuses in real time using AJAX.
-
-Files:
-- `dashboard.php`
-- `assets/js/app.js`
-- `assets/css/style.css`
-
-Commit message:
-
-```powershell
-git add dashboard.php assets/js/app.js assets/css/style.css
-git commit -m "Add live AJAX room status board to supervisor dashboard"
-```
-
-### 10. Housekeeping task creation backend
-
-Purpose:
-Allow the supervisor to create cleaning and inspection tasks with priority, date, and notes.
-
-Files:
-- `api/tasks.php`
-
-Commit message:
-
-```powershell
-git add api/tasks.php
-git commit -m "Implement housekeeping task creation endpoint"
-```
-
-### 11. Housekeeping task form UI
-
-Purpose:
-Add the task creation form to the dashboard for room assignment and scheduling.
-
-Files:
-- `dashboard.php`
-- `assets/css/style.css`
-
-Commit message:
-
-```powershell
-git add dashboard.php assets/css/style.css
-git commit -m "Add task creation form for supervisor housekeeping workflow"
-```
-
-### 12. Today task list and filtering
-
-Purpose:
-Show all tasks for today and support filtering by priority and task status.
+Update task filtering, task completion, daily reports, and history to use the Word-file task status `done`.
 
 Files:
 - `includes/helpers.php`
@@ -241,174 +122,145 @@ Files:
 - `dashboard.php`
 - `assets/js/app.js`
 
-Commit message:
+Commit:
 
 ```powershell
 git add includes/helpers.php api/tasks.php dashboard.php assets/js/app.js
-git commit -m "Add today task list with status and priority filters"
+git commit -m "Convert housekeeping task workflow to done status"
 ```
 
-### 13. Task progress and completion updates
+### 27. Improve maintenance reporting fields
 
 Purpose:
-Let the supervisor mark tasks as in progress or completed and save completion notes.
+Store who reported maintenance issues and save the resolution time when an issue is resolved.
 
 Files:
-- `api/tasks.php`
-- `assets/js/app.js`
-- `dashboard.php`
-
-Commit message:
-
-```powershell
-git add api/tasks.php assets/js/app.js dashboard.php
-git commit -m "Enable housekeeping task progress and completion updates"
-```
-
-### 14. Room ready workflow
-
-Purpose:
-Allow completed tasks to mark a room as clean and ready, restoring room status to available.
-
-Files:
-- `api/tasks.php`
-- `dashboard.php`
-- `assets/js/app.js`
-
-Commit message:
-
-```powershell
-git add api/tasks.php dashboard.php assets/js/app.js
-git commit -m "Add room ready action after housekeeping task completion"
-```
-
-### 15. Maintenance reporting backend
-
-Purpose:
-Support logging maintenance issues and automatically switching affected rooms to maintenance status.
-
-Files:
-- `includes/helpers.php`
 - `api/maintenance.php`
+- `sql/housekeeping_supervisor.sql`
 
-Commit message:
-
-```powershell
-git add includes/helpers.php api/maintenance.php
-git commit -m "Implement maintenance issue reporting and room status updates"
-```
-
-### 16. Maintenance management UI
-
-Purpose:
-Show maintenance report form, open issue list, and update controls for in-progress and resolved reports.
-
-Files:
-- `dashboard.php`
-- `assets/js/app.js`
-- `assets/css/style.css`
-
-Commit message:
+Commit:
 
 ```powershell
-git add dashboard.php assets/js/app.js assets/css/style.css
-git commit -m "Build maintenance management interface for supervisor"
+git add api/maintenance.php sql/housekeeping_supervisor.sql
+git commit -m "Track maintenance reporter and resolution time"
 ```
 
-### 17. Upcoming check-in and check-out planning
+### 28. Verify XAMPP database and localhost setup
 
 Purpose:
-Display upcoming departures and arrivals so the supervisor can prioritize room turnover.
+Record the XAMPP import and local run instructions after testing the app at `http://localhost/hotel-booking/`.
 
 Files:
-- `includes/helpers.php`
-- `api/upcoming.php`
-- `dashboard.php`
-- `assets/js/app.js`
-
-Commit message:
-
-```powershell
-git add includes/helpers.php api/upcoming.php dashboard.php assets/js/app.js
-git commit -m "Add upcoming check-in and check-out planning features"
-```
-
-### 18. Daily housekeeping report
-
-Purpose:
-Generate the daily report with assigned tasks, completed tasks, pending tasks, and rooms cleared for check-in.
-
-Files:
-- `includes/helpers.php`
-- `api/report.php`
-- `dashboard.php`
-- `assets/js/app.js`
-
-Commit message:
-
-```powershell
-git add includes/helpers.php api/report.php dashboard.php assets/js/app.js
-git commit -m "Implement daily housekeeping reporting dashboard section"
-```
-
-### 19. Historical completion log and profile management
-
-Purpose:
-Add room-wise historical task completion tracking and profile update support for the supervisor.
-
-Files:
-- `api/history.php`
-- `api/profile.php`
-- `dashboard.php`
-- `assets/js/app.js`
-
-Commit message:
-
-```powershell
-git add api/history.php api/profile.php dashboard.php assets/js/app.js
-git commit -m "Add task history log and supervisor profile management"
-```
-
-### 20. Final styling documentation and polish
-
-Purpose:
-Finalize responsive styling, improve UX polish, and document setup steps for running in XAMPP.
-
-Files:
-- `assets/css/style.css`
-- `README.md`
 - `commit-plan.md`
 
-Commit message:
+Commit:
 
 ```powershell
-git add assets/css/style.css README.md commit-plan.md
-git commit -m "Polish housekeeping module UI and add setup documentation"
+git add commit-plan.md
+git commit -m "Document XAMPP verification for housekeeping database"
 ```
 
-## Push to GitHub
+### 29. Final shared schema cleanup plan
 
-After finishing all commits:
+Purpose:
+Finalize the commit plan so the new commits clearly continue after the already pushed 20 commits.
+
+Files:
+- `commit-plan.md`
+
+Commit:
 
 ```powershell
-git push -u origin main
+git add commit-plan.md
+git commit -m "Update commit plan for commits twenty one through twenty nine"
 ```
 
-If your branch already exists remotely:
+## Important Note About Commits 21-23
+
+Commits 21, 22, and 23 all touch the same SQL file. If your current working copy already contains the final SQL file, Git may not let you split it perfectly unless you stage parts interactively.
+
+Simple option:
+
+```powershell
+git add sql/housekeeping_supervisor.sql
+git commit -m "Upgrade housekeeping database to shared hotel schema"
+```
+
+Then continue from commit 24.
+
+Detailed option:
+
+```powershell
+git add -p sql/housekeeping_supervisor.sql
+```
+
+Use `git add -p` only if you are comfortable staging parts of the SQL file manually.
+
+## Recommended Easy Commit Set
+
+If you want a clean but easier path, use these commits:
+
+```powershell
+git add sql/housekeeping_supervisor.sql
+git commit -m "Upgrade housekeeping database to shared hotel schema"
+
+git add includes/auth.php api/profile.php
+git commit -m "Align supervisor account code with shared users table"
+
+git add includes/helpers.php
+git commit -m "Update housekeeping dashboard queries for shared schema"
+
+git add api/tasks.php dashboard.php assets/js/app.js
+git commit -m "Convert housekeeping task workflow to done status"
+
+git add api/maintenance.php
+git commit -m "Track maintenance reporter and resolution time"
+
+git add commit-plan.md
+git commit -m "Update commit plan for new database changes"
+```
+
+This gives you new commits after the old 20 without forcing awkward partial staging.
+
+## XAMPP Run Instructions
+
+Start Apache and MySQL in XAMPP.
+
+Import the database:
+
+```powershell
+C:\xampp\mysql\bin\mysql.exe -u root < sql\housekeeping_supervisor.sql
+```
+
+Open:
+
+```text
+http://localhost/hotel-booking/
+```
+
+Login:
+
+```text
+Email: supervisor@hotel.test
+Password: password
+```
+
+## Push After New Commits
+
+After you make the new commits:
 
 ```powershell
 git push
 ```
 
-## Suggested teacher explanation
+If Git asks for upstream:
 
-If your teacher asks why there are many commits, you can say:
+```powershell
+git push -u origin main
+```
 
-> I separated the Housekeeping Supervisor module into functional milestones such as authentication, room board, task workflow, maintenance, reporting, and profile management so the development history clearly shows progress by feature.
+## Teacher Explanation
 
-## Final advice
+If your teacher asks about the extra commits, say:
 
-- Follow the commit order exactly.
-- Run `git status` before every commit.
-- If a file was already committed earlier, it is normal to commit it again after further changes.
-- Do not use one big commit if your teacher wants feature visualization.
+> After completing the original Housekeeping Supervisor module, I updated the database and code to match the shared schema from the Word file. Commits 21-29 show the database upgrade, query updates, task status changes, maintenance improvements, and XAMPP verification.

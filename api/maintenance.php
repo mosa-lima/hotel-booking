@@ -7,6 +7,7 @@ require_once __DIR__ . '/../includes/auth.php';
 require_login(true);
 
 $pdo = db();
+$user = current_user();
 $action = post_value('action', get_value('action'));
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET' || $action === 'list') {
@@ -26,11 +27,12 @@ if ($action === 'create') {
     }
 
     $stmt = $pdo->prepare(
-        "INSERT INTO maintenance_reports (room_id, description, severity, status, reported_at)
-         VALUES (:room_id, :description, :severity, 'open', NOW())"
+        "INSERT INTO maintenance_reports (room_id, reported_by, description, severity, status, reported_at)
+         VALUES (:room_id, :reported_by, :description, :severity, 'open', NOW())"
     );
     $stmt->execute([
         'room_id' => $roomId,
+        'reported_by' => $user['id'],
         'description' => $description,
         'severity' => $severity,
     ]);
@@ -57,8 +59,13 @@ if ($action === 'update_status') {
         json_response(['success' => false, 'message' => 'Maintenance report not found.'], 404);
     }
 
-    $updateStmt = $pdo->prepare("UPDATE maintenance_reports SET status = ? WHERE id = ?");
-    $updateStmt->execute([$status, $issueId]);
+    $updateStmt = $pdo->prepare(
+        "UPDATE maintenance_reports
+         SET status = ?,
+             resolved_at = CASE WHEN ? = 'resolved' THEN NOW() ELSE resolved_at END
+         WHERE id = ?"
+    );
+    $updateStmt->execute([$status, $status, $issueId]);
 
     if ($status === 'resolved') {
         $roomStmt = $pdo->prepare("UPDATE rooms SET status = 'available', last_ready_at = NOW() WHERE id = ?");
